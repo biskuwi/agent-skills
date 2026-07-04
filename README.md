@@ -118,9 +118,9 @@ Skills are plain Markdown - they work with any agent that accepts system prompts
 
 ---
 
-## All 23 Skills
+## All 24 Skills
 
-The commands above are entry points. The pack includes 23 skills total — 22 lifecycle skills plus the `using-agent-skills` meta-skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
+The commands above are entry points. The pack includes 24 skills total: 22 lifecycle skills, the `using-agent-skills` meta-skill, and one media-production skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
 
 ### Meta - Discover which skill applies
 
@@ -160,6 +160,12 @@ The commands above are entry points. The pack includes 23 skills total — 22 li
 |-------|-------------|----------|
 | [browser-testing-with-devtools](skills/browser-testing-with-devtools/SKILL.md) | Chrome DevTools MCP for live runtime data - DOM inspection, console logs, network traces, performance profiling | Building or debugging anything that runs in a browser |
 | [debugging-and-error-recovery](skills/debugging-and-error-recovery/SKILL.md) | Five-step triage: reproduce, localize, reduce, fix, guard. Stop-the-line rule, safe fallbacks | Tests fail, builds break, or behavior is unexpected |
+
+### Media - Edit vertical shorts
+
+| Skill | What It Does | Use When |
+|-------|-------------|----------|
+| [nolan](skills/nolan/SKILL.md) | Converts horizontal talking-head, screen-recording, Ableton, plugin, or music-production videos into polished vertical shorts with smart layout and dense filmstrip QC | Making horizontal tutorial or music-production videos into shorts, fixing bad zooms, preserving length, or checking every frame |
 
 ### Review - Quality gates before merge
 

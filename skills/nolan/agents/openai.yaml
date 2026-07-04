@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nolan"
+  short_description: "Vertical video edit and QC workflow"
+  default_prompt: "Use $nolan to convert and QC this horizontal tutorial video into a polished vertical short."
