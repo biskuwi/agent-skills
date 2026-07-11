@@ -258,7 +258,7 @@ This catalog is the inherited regression contract for every new native plug-in. 
 
 ## 16. Installation, signing, notarization, and loaded-artifact truth
 
-- [ ] **INSTALL-01 — Hosts are closed before replacement.** Installer blocks or clearly requires closing Ableton and other supported DAWs; validation confirms no target host process remains. **Proof:** attempt install with host open. **Prevents:** testing old in-memory binary. **Learned from:** Tether/Aegis install feedback.
+- [ ] **INSTALL-01 — Hosts are closed before replacement.** Installer fails closed when Ableton or any supported DAW/scanner/product Standalone is running. Immediately before the first bundle mutation, retain a process-list artifact proving no target remains; if a host was open, quit it cleanly and rerun the check. A warning without blocking is a failure. **Proof:** open-host negative install test plus timestamped clean process list immediately before replacement. **Prevents:** replacing files while the old module remains mapped. **Learned from:** Tether/Aegis install feedback.
 - [ ] **INSTALL-02 — Existing bundle is removed before copy.** Upgrade does not merge into a stale VST3/AU directory. **Proof:** seed obsolete file, upgrade, confirm removal. **Prevents:** stale metadata/code.
 - [ ] **INSTALL-03 — Correct system locations and permissions.** VST3/AU/Standalone and support files install to declared platform paths for the intended scope. **Proof:** clean-user/system install and uninstall.
 - [ ] **INSTALL-04 — Built artifacts are signed.** Every nested executable/library and final bundle has the intended Developer ID/Windows certificate, hardened runtime/timestamp policy, and strict/deep verification. **Proof:** platform signature tools.
@@ -271,6 +271,7 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **INSTALL-11 — Beta and Release coexistence follows policy.** IDs, names, locations, state, and license files either coexist or intentionally replace one another. **Proof:** install-order matrix.
 - [ ] **INSTALL-12 — Packaging contains no dev residue.** No symbols, temp files, private keys, logs, source paths, unrelated products, or test fixtures unless intentionally shipped. **Proof:** package inventory.
 - [ ] **INSTALL-13 — Release scripts are shell-robust and fail closed.** Scripts use the declared interpreter, avoid reserved shell variables, quote paths, check every subprocess, clean temporary state, and never continue after a missing/stale artifact. **Proof:** shell syntax/lint plus paths-with-spaces and injected-failure tests. **Prevents:** false-green packaging. **Learned from:** Scepter validator `zsh status` failure.
+- [ ] **INSTALL-14 — Post-install host proof uses a fresh process.** Launch the validation host only after bundle replacement and prove its process start time is later than the installed bundle replacement; then verify the loaded module path, visible version, and executable hash. A host that survived installation is never post-install evidence. **Proof:** bundle replacement timestamp/hash plus host PID/start time and loaded-module identity. **Prevents:** approving an old in-memory binary after a nominal reinstall. **Learned from:** Tether 0.5.2 Ableton reinstallation.
 
 ## 17. Validators and real-host compatibility matrix
 

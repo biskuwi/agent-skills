@@ -89,7 +89,11 @@ Run repository tests, static hygiene, format validators, UI snapshot/rendering c
 
 ### 5. Prove installed runtime behavior
 
-Install the exact signed candidate and test the installed artifact, not only the build tree. Close hosts before replacement, restart/rescan after installation, and verify that the loaded module version and hash match the candidate.
+Install the exact signed candidate and test the installed artifact, not only the build tree.
+
+**Pre-install host barrier:** immediately before the first bundle mutation, enumerate every supported DAW, scanner, and product Standalone process and retain the result. If any target process is open, do not install: perform an authorized clean quit, prove the process has exited, then rerun the process check. The installer must fail closed when a target host is open; a warning or an assumed reload is not sufficient.
+
+After installation, restart/rescan and verify that the loaded module version and hash match the candidate. Post-install host proof must use a newly launched host process whose start time is later than the installed bundle replacement. A host that remained alive across installation is never valid evidence, even if its editor is closed or it appears to rescan successfully.
 
 Exercise all applicable host, lifecycle, focus, zoom, multi-instance, first-run licensing, renderer, channel-layout, state, and latency gates in the full matrix. Standalone is useful but is not a substitute for DAW testing.
 
@@ -117,6 +121,7 @@ Any applicable `FAIL`, `BLOCKED`, missing evidence, unsigned artifact, version m
 - Test at least two simultaneous editors and rapid create/destroy loops.
 - Test the actual supported DAWs on each supported OS.
 - Test installed artifacts after signing and packaging.
+- Never replace a plug-in while a target host is running; retain a clean pre-install process check and prove the validation host was launched after replacement.
 - Test state from fresh, current, legacy, corrupt, and quick-close cases.
 - Test every advertised zoom at display limits and across session reopen.
 - Test host keyboard shortcuts immediately after every text field, dropdown, modal, and WebView interaction.
@@ -139,6 +144,7 @@ Any applicable `FAIL`, `BLOCKED`, missing evidence, unsigned artifact, version m
 | “Beta opens, so licensing works.” | Beta commonly bypasses the exact first-run and expiration paths that fail in Release. |
 | “The validator failure is probably a validator bug.” | Prove the tool version and isolate the artifact; do not assume either the product or validator is wrong. |
 | “The installer succeeded.” | An open DAW can retain the old in-memory module, and stale bundle files can survive a partial copy. |
+| “The files are identical, so the open DAW is fine.” | Module code is already mapped in the host process. Only a fully closed host followed by a fresh post-install launch proves the new binary. |
 
 ## Verification
 
@@ -154,6 +160,7 @@ Before presenting a passing verdict, confirm:
 - [ ] Focus, lifecycle, multi-editor, zoom-memory, renderer, state, first-run license, and install regressions have runtime proof.
 - [ ] VST3/AU metadata and visible UI versions match the source version.
 - [ ] Built and installed artifacts are signed, hashed, and identical where expected.
+- [ ] The pre-install process check proves all target hosts were closed, and the validation host start time is later than bundle replacement.
 - [ ] `git diff --check` passes and the release tree contains no unintended changes or diagnostics.
 
 ## Output Format

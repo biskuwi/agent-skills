@@ -104,8 +104,9 @@ The completion re-audit added or made explicit the following proof requirements:
 | `LIC-15` | Normal DAW launch must not trigger OS credential prompts | Scepter 0.1.406 |
 | `HOSTER-09` | Sanitize hostile third-party plug-in output and metadata | Shard audit gap G3 |
 | `INSTALL-13` | Release shell scripts must quote paths, avoid reserved names, and fail closed | Scepter validator history |
+| `INSTALL-14` | Post-install host validation must use a process launched after bundle replacement | Tether 0.5.2 Ableton reinstallation |
 
-The first draft contained 197 gates. The corrected catalog contains 233 unique gates.
+The first draft contained 197 gates. The corrected catalog contains 234 unique gates.
 
 ## Core seven product findings retained
 
@@ -190,7 +191,7 @@ The following histories supplied additional gates but are not counted as substit
 - **MT Host:** standalone hosting/scanner/cache and child containment.
 - **Legacy Vanguard tree:** historical context cross-checked against canonical VanguardNative.
 - **Wavetable Editor:** usable-display initial bounds, aspect constraints, and editor zoom limits.
-- **Tether:** new regressions added after the seven-product baseline—dropdown styling scope, selected-mode tooltips, actual wet/dry history, misleading gradients, first-run opacity/overlay visibility, zoom parity, and open-host reinstall behavior.
+- **Tether:** new regressions added after the seven-product baseline—dropdown styling scope, selected-mode tooltips, actual wet/dry history, misleading gradients, first-run opacity/overlay visibility, zoom parity, and a hard pre-install host barrier with fresh-process post-install proof.
 
 ## Audit limitation and maintenance rule
 
