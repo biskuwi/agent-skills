@@ -10,7 +10,7 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 
 ## Commands
 
-7 slash commands that map to the development lifecycle. Each one activates the right skills automatically.
+8 slash commands that map to the development lifecycle and native plug-in release proof. Each one activates the right skills automatically.
 
 | What you're doing | Command | Key principle |
 |-------------------|---------|---------------|
@@ -21,6 +21,7 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 | Review before merge | `/review` | Improve code health |
 | Simplify the code | `/code-simplify` | Clarity over cleverness |
 | Ship to production | `/ship` | Faster is safer |
+| Prove a native plug-in | `/checklist` | Evidence, not assumptions |
 
 Skills also activate automatically based on what you're doing — designing an API triggers `api-and-interface-design`, building UI triggers `frontend-ui-engineering`, and so on.
 
@@ -118,9 +119,9 @@ Skills are plain Markdown - they work with any agent that accepts system prompts
 
 ---
 
-## All 24 Skills
+## All 25 Skills
 
-The commands above are entry points. The pack includes 24 skills total: 22 lifecycle skills, the `using-agent-skills` meta-skill, and one media-production skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
+The commands above are entry points. The pack includes 25 skills total: 22 lifecycle skills, the `using-agent-skills` meta-skill, one media-production skill, and the native plug-in proof checklist. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
 
 ### Meta - Discover which skill applies
 
@@ -160,6 +161,7 @@ The commands above are entry points. The pack includes 24 skills total: 22 lifec
 |-------|-------------|----------|
 | [browser-testing-with-devtools](skills/browser-testing-with-devtools/SKILL.md) | Chrome DevTools MCP for live runtime data - DOM inspection, console logs, network traces, performance profiling | Building or debugging anything that runs in a browser |
 | [debugging-and-error-recovery](skills/debugging-and-error-recovery/SKILL.md) | Five-step triage: reproduce, localize, reduce, fix, guard. Stop-the-line rule, safe fallbacks | Tests fail, builds break, or behavior is unexpected |
+| [checklist](skills/checklist/SKILL.md) | Evidence-backed compatibility, resilience, UI-lifecycle, zoom, licensing, installation, and release gates inherited from every Mercurial Tones native plug-in | Creating, auditing, or releasing a native audio plug-in; invoking `$checklist` or `/checklist` |
 
 ### Media - Edit vertical shorts
 

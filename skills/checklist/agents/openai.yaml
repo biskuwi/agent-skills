@@ -1,0 +1,4 @@
+interface:
+  display_name: "Native Plugin Checklist"
+  short_description: "Prove native plugin resilience before release"
+  default_prompt: "Use $checklist to audit this native audio plugin and report evidence-backed release blockers."
