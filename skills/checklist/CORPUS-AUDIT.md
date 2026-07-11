@@ -95,6 +95,7 @@ The completion re-audit added or made explicit the following proof requirements:
 | `SEC-04` | Symlink/canonical-path containment | Preset/export/license filesystem audits |
 | `SEC-05`–`SEC-08` | URL allowlisting, secret hygiene, bounded parsers, redacted errors | Licensing/update audits |
 | `LIFE-13` | Detect HWND/native-peer reparent and recreate/attach safely | Scepter 0.1.206/1.1.11, Yasha 0.4.17/0.4.20 |
+| `LIFE-14` | Essential host-visible refresh cannot trust JUCE visibility or peer heuristics | Tether 0.5.0–0.5.2 Ableton regression |
 | `PERF-13` | Dropped async completion must not permanently wedge pending counters | Scepter 0.1.260, Yasha 0.9.23 |
 | `PERF-14` | Hidden/reopened editors cannot burst-drain stale visual backlog | Scepter 0.1.33/0.1.44 |
 | `ZOOM-15` | Compose OS text scale, host scale, DPR, and user zoom exactly once | Scepter 0.1.79/1.1.1/1.1.3 |
@@ -106,7 +107,7 @@ The completion re-audit added or made explicit the following proof requirements:
 | `INSTALL-13` | Release shell scripts must quote paths, avoid reserved names, and fail closed | Scepter validator history |
 | `INSTALL-14` | Post-install host validation must use a process launched after bundle replacement | Tether 0.5.2 Ableton reinstallation |
 
-The first draft contained 197 gates. The corrected catalog contains 234 unique gates.
+The first draft contained 197 gates. The corrected catalog contains 235 unique gates.
 
 ## Core seven product findings retained
 
@@ -191,7 +192,7 @@ The following histories supplied additional gates but are not counted as substit
 - **MT Host:** standalone hosting/scanner/cache and child containment.
 - **Legacy Vanguard tree:** historical context cross-checked against canonical VanguardNative.
 - **Wavetable Editor:** usable-display initial bounds, aspect constraints, and editor zoom limits.
-- **Tether:** new regressions added after the seven-product baseline—dropdown styling scope, selected-mode tooltips, actual wet/dry history, misleading gradients, first-run opacity/overlay visibility, zoom parity, and a hard pre-install host barrier with fresh-process post-install proof.
+- **Tether:** new regressions added after the seven-product baseline—dropdown styling scope, selected-mode tooltips, actual wet/dry history, misleading gradients, first-run opacity/overlay visibility, zoom parity, essential refresh that survives unreliable JUCE host visibility/peer state, and a hard pre-install host barrier with fresh-process post-install proof.
 
 ## Audit limitation and maintenance rule
 

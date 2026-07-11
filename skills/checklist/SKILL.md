@@ -120,6 +120,7 @@ Any applicable `FAIL`, `BLOCKED`, missing evidence, unsigned artifact, version m
 - Test the first-run/trial path in Release; Beta bypasses are not proof.
 - Test at least two simultaneous editors and rapid create/destroy loops.
 - Test the actual supported DAWs on each supported OS.
+- Never stop essential meters, history, state synchronization, or licensing refresh solely because JUCE reports `isShowing()`, `isVisible()`, or `getPeer()` as false/null; reproduce the installed host's real wrapper hierarchy.
 - Test installed artifacts after signing and packaging.
 - Never replace a plug-in while a target host is running; retain a clean pre-install process check and prove the validation host was launched after replacement.
 - Test state from fresh, current, legacy, corrupt, and quick-close cases.

@@ -8,11 +8,11 @@ ROOT = Path(__file__).parents[1]
 
 
 class ChecklistContractTests(unittest.TestCase):
-    def test_catalog_has_234_unique_evidence_gates(self):
+    def test_catalog_has_235_unique_evidence_gates(self):
         checklist = (ROOT / "CHECKLIST.md").read_text()
         gate_ids = re.findall(r"\*\*([A-Z]+-\d+)", checklist)
 
-        self.assertEqual(len(gate_ids), 234)
+        self.assertEqual(len(gate_ids), 235)
         self.assertEqual(len(gate_ids), len(set(gate_ids)))
 
     def test_corpus_audit_names_the_exact_seven_and_1842_version_blocks(self):
@@ -53,6 +53,13 @@ class ChecklistContractTests(unittest.TestCase):
         self.assertIn("newly launched host process", skill)
         self.assertIn("INSTALL-14", checklist)
         self.assertIn("start time is later than the installed bundle replacement", checklist)
+
+    def test_host_visible_refresh_does_not_trust_juce_visibility(self):
+        checklist = (ROOT / "CHECKLIST.md").read_text()
+
+        self.assertIn("LIFE-14", checklist)
+        self.assertIn("isShowing() == false", checklist)
+        self.assertIn("editor construction until destruction", checklist)
 
 
 if __name__ == "__main__":
