@@ -21,6 +21,7 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **EVID-06 — Honest blockers.** Missing hardware, OS, host, signing identity, or authority is `BLOCKED`, not `PASS` or `N/A`. **Proof:** explicit matrix gap. **Prevents:** incomplete releases presented as verified.
 - [ ] **EVID-07 — Structural N/A only.** Cite the source/build fact that makes a gate impossible. **Proof:** exact declaration or absent product capability. **Prevents:** using N/A to hide missing implementation.
 - [ ] **EVID-08 — Release blocker rule.** Any applicable failure, blocker, version mismatch, unsigned artifact, dirty release tree, or missing evidence yields `NOT RELEASE READY`. **Proof:** verdict calculation. **Prevents:** subjective sign-off.
+- [ ] **EVID-09 — Changelog corpus is line-accounted.** Freeze the canonical seven product changelog hashes, enumerate every version block, and record a human mapping or explicit product-only exclusion for every compatibility/resilience lesson. **Proof:** `audit-native-changelog-corpus.py` JSON plus reviewed corpus ledger. **Prevents:** a keyword scan being presented as a complete historical audit.
 
 ## 1. Repository, identity, version, and product hygiene
 
@@ -34,6 +35,7 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **HYGIENE-08 — No release diagnostics.** Debug overlays, fallback test paths, environment trial seams, hard-coded developer paths, TODO release blockers, and verbose realtime logging are absent or compile-time excluded. **Proof:** release-binary strings/static audit and runtime smoke. **Prevents:** shipped diagnostics and security bypasses.
 - [ ] **HYGIENE-09 — Clean tree and patch hygiene.** `git diff --check` passes; generated/build artifacts and secrets are ignored; the release commit is intentional. **Proof:** clean `git status`, secret scan, diff check. **Prevents:** accidental local state in releases.
 - [ ] **HYGIENE-10 — Changelog is evidence-bearing.** It describes behavior, compatibility impact, migration, validation commands/results, known limitations, and intentionally unchanged surfaces. **Proof:** release entry review. **Prevents:** losing regression knowledge between products.
+- [ ] **HYGIENE-11 — Test hooks cannot leak into product sessions.** Capture paths, forced tabs, synthetic inputs, trial overrides, parity exports, and other environment-driven diagnostics require an explicit test-build or automation opt-in and are absent/inert in Release. **Proof:** environment-variable inventory, release-binary scan, and launch with contaminated environment. **Prevents:** normal sessions opening the wrong view, disabling live analysis, or shortening trials. **Learned from:** Scepter 1.1.27–1.1.28, Vanguard trial restoration.
 
 ## 2. Build, platform, format, and dependency compatibility
 
@@ -47,6 +49,8 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **BUILD-08 — Dependencies are pinned and reproducible.** JUCE and third-party revisions, licenses, and build acquisition are recorded. **Proof:** clean checkout build without untracked dependencies. **Prevents:** “works on my machine” releases.
 - [ ] **BUILD-09 — Release compiler settings preserve DSP contract.** Fast-math or architecture flags do not change required numerical behavior. **Proof:** reference render/null/digest comparison across configurations. **Prevents:** release-only sound drift. **Learned from:** Dagon 1.0.6.
 - [ ] **BUILD-10 — Plugin metadata regeneration is enforced.** A version or identity change fails validation when generated VST3/AU/PE metadata is stale. **Proof:** automated negative test. **Prevents:** old host-visible metadata. **Learned from:** Tether.
+- [ ] **BUILD-11 — Platform headers and macros are isolated.** Windows builds define `NOMINMAX` before `windows.h`, use valid platform APIs, and keep OS headers out of portable public interfaces. **Proof:** clean MSVC build with warnings-as-errors where supported. **Prevents:** `min`/`max` collisions and platform-only build breaks. **Learned from:** Yasha 0.4.22–0.4.23.
+- [ ] **BUILD-12 — Requested architecture is asserted after build.** CMake architecture/deployment requests are not proof; inspect every executable slice in every bundle. **Proof:** recursive `lipo`/PE architecture and deployment-floor report. **Prevents:** silently shipping arm64-only or wrong-floor artifacts. **Learned from:** Vanguard 0.15.129, Dagon sibling audit.
 
 ## 3. Real-time audio-thread safety and numerical resilience
 
@@ -62,6 +66,13 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **RT-10 — Time is sample-based.** Attack/release, debounce, transport stop, fades, and polling semantics use seconds/samples, not block counts. **Proof:** block-size invariance across the supported range. **Prevents:** host/block dependent behavior. **Learned from:** Yasha 25 ms transport-stop fix.
 - [ ] **RT-11 — Mode/state transitions are click-safe.** Quality, oversampling, bypass, preset, license, and topology changes crossfade or reset intentionally. **Proof:** transition render with peak/discontinuity bound. **Prevents:** clicks and stale tails.
 - [ ] **RT-12 — DSP reference behavior is configuration-stable.** Release/Beta and supported architectures meet product null/reference tolerances. **Proof:** committed reference corpus and tolerance rationale. **Prevents:** silent sound changes.
+- [ ] **RT-13 — Session-length memory is bounded.** Histories, gated-block lists, meters, queues, statistics, and visual rings have a fixed bound or mathematically bounded compaction. **Proof:** multi-hour accelerated stress with flat allocation/memory trend. **Prevents:** unbounded vector growth and eventual DAW failure. **Learned from:** Scepter 0.1.268.
+- [ ] **RT-14 — Offline bounce is complete and allocation-safe.** Large offline blocks neither truncate analysis/audio nor allocate on the realtime path; use pre-sized maximums or deterministic chunking with equivalent output. **Proof:** realtime/offline render comparison using 32k–65k blocks. **Prevents:** lost bounce data or realtime heap growth. **Learned from:** Scepter 0.1.255–0.1.267.
+- [ ] **RT-15 — State callbacks have bounded latency.** `getStateInformation` and `setStateInformation` do not perform heavy decode, analysis, disk I/O, or lock-held cache reconstruction. **Proof:** worst-case multi-instance save/reload timing and lock trace. **Prevents:** 10–15 second project close/reload freezes. **Learned from:** Scepter 0.1.346 and 1.0.7.
+- [ ] **RT-16 — Integer and capacity conversions are checked.** File metadata, sample counts, block capacities, channel products, and byte sizes are range-checked before narrowing or multiplication. **Proof:** boundary/fuzz cases around `INT_MAX`, overflow, truncation, and malformed metadata. **Prevents:** buffer overflow, OOM, and negative progress. **Learned from:** Scepter 0.1.243/0.1.264/0.1.271/0.1.275.
+- [ ] **RT-17 — Internal processing rates are explicit.** Filter coefficients, smoothers, delay lengths, detector windows, and DC blockers use the actual domain rate at native/2x/4x stages. **Proof:** frequency/time-constant tests in every quality/oversampling mode. **Prevents:** shifted filters and halved smoothing times. **Learned from:** Vanguard 0.9.3/0.9.11.
+- [ ] **RT-18 — Recursive/nonlinear state follows coefficient changes.** ADAA history, IIR state, oversampler state, and bypassed modes are recomputed/reset/crossfaded when coefficients or topology change. **Proof:** fast automation, enable/disable, and mode-switch discontinuity tests. **Prevents:** crackles, stale-state spikes, and invalid antiderivative differences. **Learned from:** Vanguard 0.8.5–0.9.11, Yasha BBD fixes.
+- [ ] **RT-19 — Sanitization sits at boundaries, not unbounded hot loops.** Scrub input, external/hosted outputs, recursive writes, and final output while keeping per-sample overhead measured and bounded. **Proof:** non-finite adversarial render plus CPU comparison. **Prevents:** poisoned state without recreating Manta's hot-path black-screen regression.
 
 ## 4. Channel layouts, buses, sidechain, and MIDI
 
@@ -74,6 +85,7 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **BUS-07 — Hosted plug-in auxiliaries are bounded.** Plug-in hosts disable or adapt unsupported aux/sidechain buses and map mono/stereo deliberately. **Proof:** hosted plug-in matrix. **Prevents:** child plug-in prepare/load failures. **Learned from:** Shard.
 - [ ] **BUS-08 — MIDI slicing and timestamps survive chunking.** MIDI input/output remains sample-accurate across oversized and changing blocks. **Proof:** impulse/note timestamp harness. **Prevents:** timing drift.
 - [ ] **BUS-09 — Silence policy is explicit.** `silenceInProducesSilenceOut`, tail length, synth behavior, and analyzer behavior match metadata and reality. **Proof:** validator plus render. **Prevents:** wrong host suspension and tail cuts.
+- [ ] **BUS-10 — Bus availability and UI state self-heal.** Temporary sidechain/bus loss does not erase the user's toggle; availability/state is resent after editor/bridge readiness with a bounded retry or acknowledged revision. **Proof:** save/reload, delayed WebView/native editor readiness, dropped-update injection, and later bus recovery. **Prevents:** permanently grey sidechain controls. **Learned from:** Scepter 0.1.67–0.1.77 and 1.1.10.
 
 ## 5. Latency, bypass, tails, and transport
 
@@ -100,6 +112,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **STATE-11 — Undo is user-meaningful.** One drag is one undo; destructive actions are recoverable; linking controls or changing modes does not erase history or rewrite unrelated values. **Proof:** interaction/undo sequence. **Prevents:** hostile editing behavior.
 - [ ] **STATE-12 — Mode/profile selection preserves user controls unless specified.** Profiles do not silently rewrite unrelated Target/Pull/Focus/Mix/Output-style parameters. **Proof:** before/after parameter snapshot. **Prevents:** preset modes destroying user intent. **Learned from:** Tether.
 - [ ] **STATE-13 — Runtime caches follow restored state.** Meters, curves, visualizations, latency, topology, tails, and derived DSP are refreshed or reset consistently after load. **Proof:** UI/audio state comparison immediately after restore. **Prevents:** stale visuals and sound.
+- [ ] **STATE-14 — Boolean/discrete parameters survive validator fuzz.** Bool-like values use a host-compatible parameter representation and restore exactly after arbitrary normalized writes. **Proof:** current pluginval state-restoration fuzz plus explicit min/max/near-boundary roundtrip. **Prevents:** validator and host state failures. **Learned from:** Scepter 1.1.14, Vanguard 0.15.129.
+- [ ] **STATE-15 — Large serialized payloads are size-bounded and lazy.** Embedded references, histories, or caches have an explicit maximum, checksum/shape validation, and bounded decode outside critical restore locks. **Proof:** maximum and oversized fixtures with save/reload timing. **Prevents:** state-triggered OOM and reload freezes.
+- [ ] **STATE-16 — Removed/hidden legacy controls are neutralized.** Migration explicitly forces retired latches, modes, and unsafe flags inactive unless their old meaning is intentionally preserved. **Proof:** legacy fixtures for every removed parameter/state key. **Prevents:** invisible legacy behavior affecting new sessions. **Learned from:** Vanguard legacy latch migrations.
 
 ## 7. Presets and filesystem safety
 
@@ -111,8 +126,21 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **PRESET-06 — Preset discovery is not realtime or per-frame.** Directory scan and JSON parsing happen on explicit refresh/background path with revision caching. **Proof:** profiler and code path trace. **Prevents:** UI choking. **Learned from:** Vanguard 0.15.159–0.15.166.
 - [ ] **PRESET-07 — Async chooser/menu callbacks are lifetime-safe.** Use weak/safe ownership, dismiss before teardown, and prevent overlapping operations. **Proof:** open chooser/menu then close editor repeatedly. **Prevents:** use-after-free. **Learned from:** Manta, Janggo.
 - [ ] **PRESET-08 — User and factory locations are correct.** Paths are platform-appropriate, writable, migrated, and do not collide between products/flavors. **Proof:** clean-user install and upgrade. **Prevents:** missing or cross-product presets.
+- [ ] **PRESET-09 — Structured output is encoded, never concatenated.** Preset JSON and JavaScript bridge payloads use real serializers/quoting for names, paths, labels, and metadata containing quotes, slashes, Unicode, and control characters. **Proof:** hostile-string roundtrip corpus. **Prevents:** corrupt presets and script/JSON injection. **Learned from:** Scepter 0.1.246 and 1.8.105.
+- [ ] **PRESET-10 — Factory preset revisions upgrade deterministically.** New/fixed factory presets replace stale installed copies through a version marker without overwriting user presets; Default clears all state it owns. **Proof:** upgrade from stale factory set plus user-preset preservation. **Prevents:** old AppData presets defeating shipped fixes. **Learned from:** Scepter factory-preset repair series.
 
-## 8. Host focus, keyboard, menus, modals, and text input
+## 8. Untrusted input and security boundaries
+
+- [ ] **SEC-01 — Web content has a restrictive policy.** WebView products load intended local resources under an explicit CSP; navigation, script, network, and file access are allowlisted. **Proof:** CSP test, blocked unexpected navigation/resource attempts, and clean console. **Prevents:** injected or remote content executing with bridge access.
+- [ ] **SEC-02 — Native/Web bridge validates both directions.** Treat all JS/native messages as untrusted: schema, type, length, enum, range, and request identity are checked before state changes. **Proof:** malformed, oversized, reordered, duplicated, and unknown-message corpus. **Prevents:** bridge crashes and unintended parameter/file operations.
+- [ ] **SEC-03 — External audio/reference files are bounded before decode.** Reject excessive compressed bytes, duration, channels, sample count, and decoded memory before allocation; cancellation remains responsive. **Proof:** malformed metadata, compression-bomb-style, >100 MB, huge-duration, and cancellation cases. **Prevents:** DAW OOM. **Learned from:** Scepter 0.1.264/0.1.271.
+- [ ] **SEC-04 — Path containment survives symlinks and normalization.** Resolve canonical parent/target relationships, platform separators, Unicode, case rules, reserved names, and symlinks for every user-derived path. **Proof:** adversarial filesystem fixture. **Prevents:** escaping preset/license/export roots.
+- [ ] **SEC-05 — Update and purchase links are allowlisted.** Only intended HTTPS origins and schemes can be opened; parameters are encoded and failures do not block UI/audio. **Proof:** URL corpus and offline test.
+- [ ] **SEC-06 — Release contains no signing or service secrets.** Private keys, API tokens, test credentials, license-generation material, and secret environment values never enter source, logs, packages, state, or crash reports. **Proof:** secret scan and package/binary strings audit.
+- [ ] **SEC-07 — Parsers are fail-closed and non-recursive.** License, preset, state, manifest, and bridge parsers bound depth/size, reject duplicate/invalid critical fields, and cannot recurse indefinitely during recovery. **Proof:** fuzz corpus and stack/memory bounds. **Prevents:** recursive recovery overflow. **Learned from:** Scepter 0.1.275.
+- [ ] **SEC-08 — Error reporting does not echo sensitive material.** License keys, file contents, personal paths, tokens, and signatures are redacted while preserving actionable product errors. **Proof:** failure-path log snapshot.
+
+## 9. Host focus, keyboard, menus, modals, and text input
 
 - [ ] **FOCUS-01 — Editor does not steal focus on open.** Creating/showing an editor leaves DAW transport and shortcuts responsive unless an explicit product shortcut requires focus. **Proof:** open editor and immediately press Space and key host shortcuts in every declared host. **Prevents:** host focus theft.
 - [ ] **FOCUS-02 — Passive controls never grab keyboard focus.** Knob, slider, canvas, graph, meter, drag surface, and hosted-window mouse wrappers are mouse-focus only. **Proof:** click/drag each then exercise host shortcuts. **Prevents:** transport capture. **Learned from:** Shard 0.14.11, Manta 1.0.9–1.0.10.
@@ -128,7 +156,7 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **FOCUS-12 — Multi-window focus is sane.** Detached hosted editors ignore key presses unless intended, close before processors die, and never seize DAW transport. **Proof:** open several detached windows and switch/close rapidly. **Prevents:** stale child windows and key theft. **Learned from:** Shard.
 - [ ] **FOCUS-13 — Accessibility and tab traversal are bounded.** Tab order reaches interactive text/licensing controls without trapping the host; Escape dismisses transient UI. **Proof:** keyboard-only traversal. **Prevents:** inaccessible or inescapable focus.
 
-## 9. Editor lifecycle, asynchronous work, and multi-instance resilience
+## 10. Editor lifecycle, asynchronous work, and multi-instance resilience
 
 - [ ] **LIFE-01 — Explicit shutdown begins before child destruction.** Stop new work, hide/disable input, dismiss transient UI, and mark shutdown before components disappear. **Proof:** ordered teardown instrumentation. **Prevents:** callbacks entering partially destroyed UI. **Learned from:** Manta 1.0.46 onward.
 - [ ] **LIFE-02 — All timers and workers stop and join.** Parent/child timers, scanner, activation, render, analysis, and file workers have bounded cancellation and joins. **Proof:** repeated create/destroy with thread count baseline. **Prevents:** use-after-free and process hang.
@@ -142,8 +170,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **LIFE-10 — Native child views detach before reset.** WebView, hosted editor, OS peer, and detached window teardown order is explicit. **Proof:** close/reopen stress in host. **Prevents:** native child use-after-free. **Learned from:** Vanguard.
 - [ ] **LIFE-11 — Scanner and hosted objects have bounded ownership.** Scanner cancellation kills/joins child work; third-party processors are not destroyed under the host callback lock. **Proof:** cancel scan and close host during slow/broken plug-in load. **Prevents:** shutdown hangs/deadlocks. **Learned from:** Shard 0.7.4/0.9.2.
 - [ ] **LIFE-12 — Shared caches have lifetime ownership.** Fonts, images, paths, and shared models are ref-counted or immutable; one editor closing cannot invalidate another. **Proof:** multi-editor close-order test. **Prevents:** cross-instance UAF.
+- [ ] **LIFE-13 — Native peer reparenting is detected.** WebView/native-child products handle host HWND/NSView changes and channel duplication by safely recreating or reattaching the child after a real peer exists. **Proof:** FL Studio duplicate/reparent, Bitwig open, hide/show, and host window recreation. **Prevents:** permanent white screens and duplicate boot. **Learned from:** Scepter 0.1.206/1.1.11, Yasha 0.4.17/0.4.20.
 
-## 10. UI throughput, choking, repaint, and pressure behavior
+## 11. UI throughput, choking, repaint, and pressure behavior
 
 - [ ] **PERF-01 — No work-per-mouse-event storm.** Dragging coalesces model changes and caps expensive rebuild/repaint cadence. **Proof:** drag trace with repaint and rebuild counts. **Prevents:** choking UI. **Learned from:** Dagon 1.0.3/1.0.5.
 - [ ] **PERF-02 — Expensive visuals are dirty/revision driven.** Frost, spectra, shadows, paths, preset lists, and raster caches rebuild only when inputs change. **Proof:** idle and drag instrumentation. **Prevents:** redundant frame work.
@@ -157,8 +186,10 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **PERF-10 — Open-sync fallback is bounded.** Initial UI synchronization is one-shot/capped and then revision-driven, not a perpetual full refresh. **Proof:** refresh counter over idle minute. **Prevents:** hidden 30 Hz work. **Learned from:** Vanguard 0.15.159–0.15.166.
 - [ ] **PERF-11 — Web/native transport has backpressure.** WebView evaluate/bridge messages are batched, bounded, and recover when callbacks are dropped. **Proof:** message flood and watchdog scenario. **Prevents:** WebView queue choke. **Learned from:** Scepter/Yasha.
 - [ ] **PERF-12 — UI remains responsive under audio stress.** Worst supported sample rate/block, automation, multi-instance, resize, and meters do not block host input. **Proof:** message-thread latency trace and real-host interaction recording.
+- [ ] **PERF-13 — Async queue counters self-heal.** Pending WebView/native work uses acknowledgement, timeout/watchdog, or generation reset so a dropped completion callback cannot permanently freeze future updates. **Proof:** deliberately drop callbacks and verify bounded recovery. **Learned from:** Scepter 0.1.260, Yasha 0.9.23.
+- [ ] **PERF-14 — Reopen backlog is bounded.** Hidden-editor rings/queues either pause, overwrite old data, or discard stale backlog; reopening cannot burst-drain seconds of visual updates. **Proof:** leave hidden under signal, reopen multiple instances, measure queue depth/frame latency. **Prevents:** repeated-open UI freezes. **Learned from:** Scepter 0.1.33/0.1.44.
 
-## 11. Zoom, resizing, DPI, and session memory
+## 12. Zoom, resizing, DPI, and session memory
 
 - [ ] **ZOOM-01 — Every advertised zoom is usable.** Exercise all choices, including 50/75/100/125/150/200% when offered. **Proof:** screenshots and interaction tests at each level. **Prevents:** untested intermediate scales.
 - [ ] **ZOOM-02 — Geometry scales natively.** Layout, fonts, strokes, menu rows, panels, tooltips, and hit targets scale proportionally; do not use a whole-component transform or bitmap stretch as the implementation. **Proof:** 0.5x/1x/2x rendering and hit tests. **Prevents:** blurry or misaligned UI. **Learned from:** Manta 1.0.59–1.0.65.
@@ -174,8 +205,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **ZOOM-12 — Logical and backing pixels are not confused.** Web/native drawing uses logical CSS/component dimensions while accounting for DPR exactly once. **Proof:** Retina/HiDPI screenshots and coordinate assertions. **Prevents:** off-screen playheads and labels. **Learned from:** Scepter.
 - [ ] **ZOOM-13 — Paint and hit geometry share a source.** Knob/control painting and interaction derive from the same layout/transform function. **Proof:** center/edge hit grid at every zoom. **Prevents:** controls visually moving away from hit targets. **Learned from:** Aegis 0.1.208.
 - [ ] **ZOOM-14 — Host resize constraints are stable.** Fixed aspect, minimum/maximum, host-initiated resize, and reopening do not oscillate or recursively resize. **Proof:** drag corners in each host and inspect callback count.
+- [ ] **ZOOM-15 — OS text scaling and host scaling compose once.** Test Windows text scaling, host plug-in scaling, WebView/CSS scale, user zoom, and display DPI together; disable unintended inherited WebView text inflation while preserving deliberate accessibility behavior. **Proof:** matrix at 75/100/125/150/200% host/OS settings. **Prevents:** clipped layouts and double scaling. **Learned from:** Scepter 0.1.79 and 1.1.1/1.1.3.
 
-## 12. Rendering truth, visual robustness, and UI contracts
+## 13. Rendering truth, visual robustness, and UI contracts
 
 - [ ] **RENDER-01 — Real renderer is tested.** Run in actual DAW renderer paths on macOS and Windows; software snapshots alone do not pass. **Proof:** host screenshots/video at normal, invalidated-cache, and low-CPU/pressure paths. **Prevents:** CoreGraphics/Metal/WebView-only failures.
 - [ ] **RENDER-02 — Opaque base coverage is unconditional.** Critical panels have a vector/base fill even if clipped image/texture blits fail; textured fills and veils are additive. **Proof:** forced cache miss/clipping scenario. **Prevents:** black/transparent holes. **Learned from:** Shard, Manta, Dagon.
@@ -190,8 +222,11 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **RENDER-11 — Control text remains legible and finite.** Long/localized labels, negative values, high DPI, unavailable fonts, and unusual state never clip into controls or yield invalid metrics. **Proof:** text stress snapshots.
 - [ ] **RENDER-12 — UI self-snapshots have pixel guards.** Golden comparisons include meaningful regions and fail on blank/transparent output, not merely file creation. **Proof:** deliberate mutation test.
 - [ ] **RENDER-13 — Meters and history have defined timing.** Display update/smoothing is independent of block size, handles hidden/reopen, and does not advance twice. **Proof:** timing and lifecycle tests.
+- [ ] **RENDER-14 — Transparent cached layers are actually cleared.** Do not rely on painting transparent black with source-over semantics; use an explicit image clear or replacement. **Proof:** draw-move-clear pixel test on every renderer. **Prevents:** ghost taps/curves and stale cached visuals. **Learned from:** Manta's hosted ghosting fix.
+- [ ] **RENDER-15 — Renderer-sensitive image overloads are compared.** Texture/panel drawing uses a proven source/destination path with validity guards; changing JUCE image overloads requires pixel comparison in host renderers. **Proof:** macOS/Windows before-after pixel and luminance test. **Prevents:** unexpectedly dark panels. **Learned from:** Vanguard 0.15.140–0.15.146.
+- [ ] **RENDER-16 — Pointer coordinates use the same scaled space as paint.** Web canvases/native controls convert offset/client/backing/host coordinates exactly once and choose targets by robust geometry. **Proof:** click/drag grid under non-100% host and OS scaling. **Prevents:** band/node selection offset. **Learned from:** Scepter 0.1.65/0.1.79.
 
-## 13. Trial, licensing, activation, and security
+## 14. Trial, licensing, activation, and security
 
 - [ ] **LIC-01 — Release first-run path is exercised.** Clean all product license/trial state, launch Release, and capture first frame plus all interactions. Beta is not accepted because it may bypass licensing. **Proof:** clean-account recording/screenshots. **Prevents:** hidden first-run failures.
 - [ ] **LIC-02 — Overlay visibility ownership is correct.** Parent visibility wiring does not override the overlay's internal trial/licensed/expired state. **Proof:** first-run, dismissed, licensed, expired, and reopen matrix. **Prevents:** permanently shown/hidden overlay. **Learned from:** Tether vs Shard wiring review.
@@ -207,8 +242,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **LIC-12 — License audio policy preserves timing safety.** Trial expiry/mute does not poison latency-compensated bypass, delay priming, tails, or state. **Proof:** transition render. **Prevents:** pops and PDC jumps.
 - [ ] **LIC-13 — Modal key handlers do not accumulate.** Reopening purchase/activation overlays installs exactly one handler/listener and removes it on close. **Proof:** listener count and repeated flow.
 - [ ] **LIC-14 — Flavor separation is explicit.** Beta/Release license bypasses, branding, endpoints, bundle IDs, and support paths follow policy without contaminating user licenses. **Proof:** flavor comparison.
+- [ ] **LIC-15 — License persistence never surprises with OS credential prompts.** Backup/anchor storage follows product policy and does not cause the DAW to request Keychain/credential-manager access on ordinary launch. **Proof:** clean-account launch in each supported host. **Prevents:** frightening host-branded password prompts. **Learned from:** Scepter 0.1.406.
 
-## 14. Plug-in-host/scanner products (when applicable)
+## 15. Plug-in-host/scanner products (when applicable)
 
 - [ ] **HOSTER-01 — Scanner cancellation is bounded.** Scanner owns/joins workers, polls cancellation, terminates child processes, and cannot keep the app alive. **Proof:** cancel during a hung plug-in scan. **Learned from:** Shard 0.7.4.
 - [ ] **HOSTER-02 — Delayed scan callbacks are weak.** Automatic/rescan work cannot target a destroyed editor/model. **Proof:** schedule then immediately close. **Prevents:** UAF.
@@ -218,8 +254,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **HOSTER-06 — State capture has defined locking.** Hosted state reads occur under the correct structure ownership without blocking realtime indefinitely. **Proof:** save session during processing and UI callbacks.
 - [ ] **HOSTER-07 — Detached editors close before processors.** Stale indices are rejected and wrappers do not steal keys. **Proof:** multiple detached-window close orders. **Prevents:** UAF and host focus theft.
 - [ ] **HOSTER-08 — Broken third-party plug-ins are contained.** Crash/hang/invalid state during scan/load produces a recoverable quarantine/error path. **Proof:** adversarial fixture plug-ins.
+- [ ] **HOSTER-09 — Third-party audio is sanitized at the boundary.** Hosted plug-in input/output, latency, tail, bus metadata, and state sizes are finite and bounded before entering the host's own graph/sum. **Proof:** adversarial child plug-in emitting NaN/Inf/extreme latency/state. **Prevents:** one child poisoning the entire session. **Learned from:** Shard sibling audit gap G3.
 
-## 15. Installation, signing, notarization, and loaded-artifact truth
+## 16. Installation, signing, notarization, and loaded-artifact truth
 
 - [ ] **INSTALL-01 — Hosts are closed before replacement.** Installer blocks or clearly requires closing Ableton and other supported DAWs; validation confirms no target host process remains. **Proof:** attempt install with host open. **Prevents:** testing old in-memory binary. **Learned from:** Tether/Aegis install feedback.
 - [ ] **INSTALL-02 — Existing bundle is removed before copy.** Upgrade does not merge into a stale VST3/AU directory. **Proof:** seed obsolete file, upgrade, confirm removal. **Prevents:** stale metadata/code.
@@ -233,8 +270,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **INSTALL-10 — Uninstall is scoped.** Removes product binaries/receipts without deleting user presets/licenses unless explicitly selected. **Proof:** uninstall fixture.
 - [ ] **INSTALL-11 — Beta and Release coexistence follows policy.** IDs, names, locations, state, and license files either coexist or intentionally replace one another. **Proof:** install-order matrix.
 - [ ] **INSTALL-12 — Packaging contains no dev residue.** No symbols, temp files, private keys, logs, source paths, unrelated products, or test fixtures unless intentionally shipped. **Proof:** package inventory.
+- [ ] **INSTALL-13 — Release scripts are shell-robust and fail closed.** Scripts use the declared interpreter, avoid reserved shell variables, quote paths, check every subprocess, clean temporary state, and never continue after a missing/stale artifact. **Proof:** shell syntax/lint plus paths-with-spaces and injected-failure tests. **Prevents:** false-green packaging. **Learned from:** Scepter validator `zsh status` failure.
 
-## 16. Validators and real-host compatibility matrix
+## 17. Validators and real-host compatibility matrix
 
 - [ ] **VALID-01 — Official format validators pass.** Current official `vstvalidator`, `pluginval`, and `auval` run at the required strictness on installed artifacts. **Proof:** full logs with tool versions. **Prevents:** outdated-validator ambiguity.
 - [ ] **VALID-02 — Validator/tool artifacts are isolated, not assumed.** If a validator appears wrong, reproduce with current version, minimal plug-in/API contract, and real host before waiver. **Proof:** documented isolation. **Learned from:** Janggo boolean fuzz, Vanguard old pluginval.
@@ -248,8 +286,9 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **VALID-10 — State matrix passes in every format.** Cross-format compatibility follows policy; current/legacy/corrupt state restores with correct latency/UI/DSP. **Proof:** fixtures and host projects.
 - [ ] **VALID-11 — Real-time CPU and UI budgets pass.** Measure average and tail latency with editor closed, one open, two open, and pressure mode. **Proof:** repeatable benchmark, not visual impression.
 - [ ] **VALID-12 — No regression outside intended scope.** Null/reference renders, UI snapshots, identity, parameters, presets, licensing, installers, and performance are compared with the previous release. **Proof:** release delta report.
+- [ ] **VALID-13 — Project save/close/reload latency is budgeted.** Measure state callbacks and complete host close/reload with one and many instances at maximum state size. **Proof:** timing percentile and no message-thread stall. **Prevents:** state-caching fixes regressing into shutdown freezes.
 
-## 17. Release close and long-term hygiene
+## 18. Release close and long-term hygiene
 
 - [ ] **RELEASE-01 — Product-specific gates also pass.** Run every repository release validator, self-test, UI snapshot, conductor/harness, null/reference, state, focus, and installer test. **Proof:** command transcript.
 - [ ] **RELEASE-02 — Release and Beta are installed and smoke-tested.** Do not stop at compilation. **Proof:** installed paths/hashes and host results.
@@ -262,42 +301,33 @@ This catalog is the inherited regression contract for every new native plug-in. 
 - [ ] **RELEASE-09 — Post-install user path is clean.** Fresh user can discover the plug-in, open it, understand first screen, hear correct audio, use presets, resize, license, save, and reopen without developer knowledge. **Proof:** clean-account end-to-end recording.
 - [ ] **RELEASE-10 — Regression knowledge is retained.** Every new escaped defect adds a minimal test and a new/updated checklist gate with cause and proof. **Proof:** bug-close template. **Prevents:** fixing the same class in every product.
 
-## 18. Historical source corpus
+## 19. Historical source corpus
 
-The catalog was synthesized on 2026-07-11 from the complete canonical root changelog in each native product repository below, then cross-checked against current tests, CMake, release validators, installers, and relevant source mechanisms. Large repositories contain mirrored/copied plug-in changelogs; the root product changelog is treated as the canonical history and unique product-local material is captured by that product's gates.
+The primary corpus is the seven established native products represented in the Mercurial Tones Software Center: Manta, Yasha, Scepter, Vanguard, Dagon, Shard, and Janggo. Tether is the new consumer of this inherited baseline. Aegis, Golem, MT Host, the legacy Vanguard tree, Wavetable Editor, and Tether remain supplemental sources; they do not replace proof that the canonical seven were covered.
 
-| Repository | Root changelog lines | Bytes | SHA-256 |
-|---|---:|---:|---|
-| Aegis | 2,936 | 294,452 | `15d8a165f7af2944bbadbb2238e96e59518bfa21afd613530928042efe761608` |
-| dagon | 3,927 | 376,506 | `ca5a332ce49d6206a5a3ecf1bae01281277812b2b01a832b2ed21eea51e19eb5` |
-| golem | 143 | 11,921 | `ecfc43d9fcc1d44fd33f76d316232f2b9f92f0607ba4561c4aa5bd7f59aad073` |
-| host | 226 | 13,558 | `b1a0076bc8dbc8cbce59ad9e7875caa8fe25e6245e5db2a2ecefa7c097170693` |
-| janggonative | 775 | 53,157 | `5891f9cca124ff7b2643394f034857135a881019b63cc3fba5a8a218deab3ced` |
-| mantanative | 14,456 | 957,473 | `8699fcab4498a2740291411fa28617f74c63945c02c17a9215ceb4b66ee9f494` |
-| scepternative | 16,862 | 1,633,246 | `becb85070b05040ed067e2cee45402936aee37e1af827152fe9d471cb3054668` |
-| splitter (Shard) | 1,489 | 90,375 | `22344f10dd1d193c3ea02cd435a7f379c0578c67feafb5369b53700d986fa45e` |
-| tethernative | 169 | 12,144 | `0e39ae6d84eb169420f0e05decba71edc49b69d06a1a66c4a8fcb3fcc5065c82` |
-| vanguard | 7,861 | 439,152 | `ad1a9ff008410cbc5ae919a94568ef2fa0aab9ec6ed4218a0328cb7f89f3a38a` |
-| vanguardnative | 7,163 | 403,345 | `cb584889460b37e64ed1f78c31ba55113a0f69c43caf628681154d8e42c349c7` |
-| wavetable-editor | 43 | 3,582 | `e422341354c95b3763f75ceddbd2528fed2525cacb27137bb988d6fcf50419a7` |
-| yashanative | 5,600 | 276,375 | `bd5d16d20dc9adac473b10dcdaaddd94f33c1f9a914104269472a5c63f0f6348` |
+The line-accounting audit on 2026-07-11 enumerated all **1,842** version blocks and accounted for every physical line after removing Manta's embedded NUL bytes for parsing while hashing the untouched raw file. Keyword routing never counts as semantic proof; every compatibility/resilience block still requires human mapping or an explicit product-only exclusion. See [CORPUS-AUDIT.md](CORPUS-AUDIT.md) for method, review ledger, omissions found, and the supplemental corpus.
+
+| Product | Repository | Physical lines | Version blocks | Bytes | Raw SHA-256 |
+|---|---|---:|---:|---:|---|
+| Janggo | janggonative | 775 | 28 | 53,157 | `5891f9cca124ff7b2643394f034857135a881019b63cc3fba5a8a218deab3ced` |
+| Manta | mantanative | 14,456 | 430 | 957,473 | `8699fcab4498a2740291411fa28617f74c63945c02c17a9215ceb4b66ee9f494` |
+| Scepter | scepternative | 16,862 | 866 | 1,633,246 | `becb85070b05040ed067e2cee45402936aee37e1af827152fe9d471cb3054668` |
+| Shard | splitter | 1,489 | 59 | 90,375 | `22344f10dd1d193c3ea02cd435a7f379c0578c67feafb5369b53700d986fa45e` |
+| Vanguard | vanguardnative | 7,163 | 214 | 403,345 | `cb584889460b37e64ed1f78c31ba55113a0f69c43caf628681154d8e42c349c7` |
+| Yasha | yashanative | 5,600 | 116 | 276,375 | `bd5d16d20dc9adac473b10dcdaaddd94f33c1f9a914104269472a5c63f0f6348` |
+| Dagon | dagon | 3,927 | 129 | 376,506 | `ca5a332ce49d6206a5a3ecf1bae01281277812b2b01a832b2ed21eea51e19eb5` |
 
 ### Principal inherited failures by product
 
-- **Aegis:** explicit shortcut focus exceptions; paint/hit geometry drift under resize; replacement of estimated waveform behavior with truthful signal paths; install-while-host-open confusion; semantic/visual/bug-compatibility release validators.
 - **Dagon:** drag-time frosted-glass/repaint storms; dirty-driven UI; platform frame budgets; cached audio-thread parameters; no fast-math sound drift; hidden-editor and allocation pressure; release/prepare must not clear editor policy.
-- **Golem:** basic identity, build, validation, and release hygiene remain mandatory even when the product history is short.
-- **MT Host:** hosted plug-in lifecycle, scan/cache seeding, signing/notarization, standalone host shutdown, and child plug-in containment.
 - **Janggo:** zoom provenance and persistence; 0x0 resize guard; debounced/flush-on-close preferences; host notification reentrancy deadlock; safe popup/dialog teardown; multi-editor pressure shedding; path connectivity; validator Default program.
 - **Manta:** native zoom geometry/caches; hidden timers; full shutdown ordering and safe async ownership; Web/native cutover; focus retry after real bounds; accidental focus grab regression; mono/transitional buffers; APVTS silent restore; first native license UI omission.
 - **Scepter:** WebView and WebView2 focus handoff; child HWND behavior; Retina logical pixels; actual sidechain buffer channels; WebView transport backpressure; WebView2 data/linking; native-only build enforcement; AU cache/version/installer and parameter hint compatibility.
 - **Shard:** message/audio callback-lock deadlocks; split-phase hosted plug-in mutation; scanner/thread/window ownership; latency-compensated primed bypass; processor-owned activation; signed offline licenses; preset path safety and notification batching; detached-window focus; truthful renderer fallback.
-- **Tether:** stable parameters and block-size invariance; actual wet-vs-dry history; dropdown-only styling scope; selected-mode tooltips; zoom parity; floor/gradient semantics; first-run trial opacity/visibility; host-open reinstall confusion.
-- **Vanguard / Vanguard Native:** duplicate refresh loops; revision-driven UI; state/DSP synchronization; popup and native-child teardown; deferred overlay/focus; transient mono/zero-channel safety; panel resize preserving zoom; final zoom persistence; primed bypass; old validator isolation.
-- **Wavetable Editor:** usable-display initial sizing, fixed aspect, zoom limits, and standalone/native editor lifecycle.
+- **Vanguard:** duplicate refresh loops; revision-driven UI; state/DSP synchronization; popup and native-child teardown; deferred overlay/focus; transient mono/zero-channel safety; panel resize preserving zoom; final zoom persistence; primed bypass; old validator isolation.
 - **Yasha:** native identity/export and installer workflows; Windows WebView2 focus; sample-based transport timing; monotonic AU parameter hints; native text/help/top-strip/interaction/state/hardening gates; Lite/full coexistence.
 
-## 19. Proof-report skeleton
+## 20. Proof-report skeleton
 
 ```markdown
 # Native Plugin Proof Report — PRODUCT VERSION

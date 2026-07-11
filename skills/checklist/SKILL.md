@@ -9,7 +9,7 @@ description: Audits native audio plug-ins against Mercurial Tones' accumulated c
 
 Turn the failure history of every Mercurial Tones native plug-in into a release gate. This is not a list of suggestions: every applicable requirement needs reproducible evidence before the plug-in may be called compatible, resilient, or release-ready.
 
-The complete requirement catalog is in [CHECKLIST.md](CHECKLIST.md). Read that file completely before beginning an audit. Do not audit from memory or from this summary.
+The complete requirement catalog is in [CHECKLIST.md](CHECKLIST.md). Read that file completely before beginning an audit. Do not audit from memory or from this summary. When updating the inherited baseline, validating its historical completeness, or answering which products taught a rule, also read [CORPUS-AUDIT.md](CORPUS-AUDIT.md) completely.
 
 ## Scope
 
@@ -68,6 +68,14 @@ bash /mnt/skills/user/checklist/scripts/audit-native-plugin.sh . > checklist-sta
 ```
 
 When running from a source checkout of this skill, substitute the actual script path. The script inventories evidence and flags missing mechanisms. Its `observed` result is not a runtime `PASS`.
+
+When auditing or updating the seven-product historical baseline, also freeze the exact changelog corpus:
+
+```bash
+python3 /mnt/skills/user/checklist/scripts/audit-native-changelog-corpus.py /path/to/workspace > native-changelog-corpus.json
+```
+
+The corpus output accounts for lines and version blocks but intentionally marks every entry `requires_human_review`. Keyword routing is not semantic proof.
 
 ### 3. Build the applicability matrix
 
@@ -137,6 +145,7 @@ Any applicable `FAIL`, `BLOCKED`, missing evidence, unsigned artifact, version m
 Before presenting a passing verdict, confirm:
 
 - [ ] The complete checklist was read and every ID has a status.
+- [ ] For baseline changes, the seven-product corpus ledger matches the reviewed raw hashes and every new/changed version block has a semantic mapping or explicit product-only exclusion.
 - [ ] Candidate commit, version, flavor, hashes, and installed paths are recorded.
 - [ ] No `FAIL`, `BLOCKED`, `UNKNOWN`, or unexplained `N/A` remains.
 - [ ] Repository tests and all declared product-specific gates are green.
