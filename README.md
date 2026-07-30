@@ -119,9 +119,9 @@ Skills are plain Markdown - they work with any agent that accepts system prompts
 
 ---
 
-## All 25 Skills
+## All 26 Skills
 
-The commands above are entry points. The pack includes 25 skills total: 22 lifecycle skills, the `using-agent-skills` meta-skill, one media-production skill, and the native plug-in proof checklist. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
+The commands above are entry points. The pack includes 26 skills total: 22 lifecycle skills, the `using-agent-skills` meta-skill, one media-production skill, the native plug-in proof checklist, and the Mercurial Tones preset-hygiene skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
 
 ### Meta - Discover which skill applies
 
@@ -162,6 +162,7 @@ The commands above are entry points. The pack includes 25 skills total: 22 lifec
 | [browser-testing-with-devtools](skills/browser-testing-with-devtools/SKILL.md) | Chrome DevTools MCP for live runtime data - DOM inspection, console logs, network traces, performance profiling | Building or debugging anything that runs in a browser |
 | [debugging-and-error-recovery](skills/debugging-and-error-recovery/SKILL.md) | Five-step triage: reproduce, localize, reduce, fix, guard. Stop-the-line rule, safe fallbacks | Tests fail, builds break, or behavior is unexpected |
 | [checklist](skills/checklist/SKILL.md) | Evidence-backed compatibility, resilience, UI-lifecycle, zoom, licensing, installation, and release gates inherited from every Mercurial Tones native plug-in | Creating, auditing, or releasing a native audio plug-in; invoking `$checklist` or `/checklist` |
+| [mt-preset](skills/mt-preset/SKILL.md) | Evidence-backed format, migration, filesystem, library, host, and audio-safety rules for Mercurial Tones presets | Auditing, designing, migrating, or hardening a native audio plug-in preset system |
 
 ### Media - Edit vertical shorts
 
@@ -250,7 +251,7 @@ Every skill follows a consistent anatomy:
 
 ```
 agent-skills/
-├── skills/                            # 23 skills (22 lifecycle + 1 meta)
+├── skills/                            # 26 skills (23 core + 3 specialized)
 │   ├── interview-me/                  #   Define
 │   ├── idea-refine/                   #   Define
 │   ├── spec-driven-development/       #   Define
@@ -264,6 +265,9 @@ agent-skills/
 │   ├── api-and-interface-design/      #   Build
 │   ├── browser-testing-with-devtools/ #   Verify
 │   ├── debugging-and-error-recovery/  #   Verify
+│   ├── checklist/                     #   Native plug-in proof
+│   ├── mt-preset/                     #   Native preset hygiene
+│   ├── nolan/                         #   Media
 │   ├── code-review-and-quality/       #   Review
 │   ├── code-simplification/          #   Review
 │   ├── security-and-hardening/        #   Review

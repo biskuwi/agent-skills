@@ -1,0 +1,4 @@
+interface:
+  display_name: "MT Preset Hygiene"
+  short_description: "Audit and harden Mercurial Tones presets"
+  default_prompt: "Use $mt-preset to audit this product preset system and apply the safest Mercurial Tones preset hygiene rules."
