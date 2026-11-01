@@ -8,12 +8,21 @@ ROOT = Path(__file__).parents[1]
 
 
 class ChecklistContractTests(unittest.TestCase):
-    def test_catalog_has_235_unique_evidence_gates(self):
+    def test_catalog_has_239_unique_evidence_gates(self):
         checklist = (ROOT / "CHECKLIST.md").read_text()
         gate_ids = re.findall(r"\*\*([A-Z]+-\d+)", checklist)
 
-        self.assertEqual(len(gate_ids), 235)
+        self.assertEqual(len(gate_ids), 239)
         self.assertEqual(len(gate_ids), len(set(gate_ids)))
+
+    def test_host_ui_thread_budget_is_measured_against_pro_l_2(self):
+        checklist = (ROOT / "CHECKLIST.md").read_text()
+
+        for gate in ("PERF-15", "PERF-16", "PERF-17", "PERF-18"):
+            self.assertIn(gate, checklist)
+        self.assertIn("at most 1 ms per frame on the host thread", checklist)
+        self.assertIn("FabFilter Pro-L 2 in the same session", checklist)
+        self.assertIn("the host thread at most records a frame", checklist)
 
     def test_corpus_audit_names_the_exact_seven_and_1842_version_blocks(self):
         audit = (ROOT / "CORPUS-AUDIT.md").read_text()
