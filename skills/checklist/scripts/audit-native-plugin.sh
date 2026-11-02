@@ -23,7 +23,7 @@ if command -v rg >/dev/null 2>&1; then
       -- "$1" "$repo" 2>/dev/null | head -n 8 || true
   }
   file_search() {
-    rg --files "$repo" -g '!build*/**' -g '!Build*/**' -g '!.git/**' \
+    rg --files --hidden "$repo" -g '!build*/**' -g '!Build*/**' -g '!.git/**' \
       -g '!node_modules/**' -g '!JUCE/**' -g '!third_party/**' -g '!vendor/**' \
       2>/dev/null | rg -i -- "$1" | head -n 12 || true
   }
@@ -111,9 +111,11 @@ observe_source "HYGIENE-03" 'AudioParameter|ParameterID|parameter.*id|versionHin
 observe_source "HYGIENE-04" 'versionHint|parameterVersionHint|AudioProcessorParameterWithID' \
   "AU parameter version-hint mechanisms may exist; monotonic history still needs proof."
 observe_source "BUILD-01" 'FORMATS[^\n]*(VST3|AU|Standalone)|juce_add_plugin' \
-  "Declared formats were found; clean Release and Beta builds remain runtime gates."
+  "Declared formats were found; AU + VST3 (universal) are always required on macOS, Standalone per lineup; clean Release and Beta builds and check_mac_pkg_formats.sh on the signed pkg remain runtime gates."
 observe_files "BUILD-08" 'CMakeLists\.txt$|CMakePresets\.json$|\.gitmodules$|FetchContent|CPM' \
   "Build/dependency declarations were found; reproducibility still needs a clean build."
+observe_files "BUILD-13" '(^|/)\.juce-version$|JUCE_VERSION|JuceVersion|juce-framework/JUCE' \
+  "JUCE pin/currentness evidence was found; confirm every platform consumes one exact current pin and prove platform builds."
 observe_files "RELEASE-01" '/(tests?|Tests?|tools?)/|test[^/]*\.(cpp|py|sh)$|self.?test|UiPolicyTest|StateCheck' \
   "Product tests were found; the audit must run every applicable suite."
 observe_files "VALID-01" 'validate.*release|pluginval|vstvalidator|auval|plugtest' \

@@ -1,9 +1,11 @@
 ---
 name: checklist
-description: Audits native audio plug-ins against Mercurial Tones' accumulated compatibility, real-time safety, host-focus, UI-lifecycle, zoom, state, licensing, installation, and release-hygiene regressions. Use when creating a plug-in, preparing a Beta or Release build, diagnosing recurring cross-product bugs, reviewing a native JUCE plug-in, or when the user says "$checklist", "plugin checklist", "compatibility check", "resilience check", or "release proof".
+description: Audits native audio plug-ins against Mercurial Tones' accumulated compatibility, real-time safety, host-focus, UI-lifecycle, zoom, state, licensing, installation, and release-hygiene regressions. Use when creating a plug-in, preparing a Beta or Release build, diagnosing recurring cross-product bugs, reviewing a native JUCE plug-in, or when the user says "/checklist", "$checklist", "plugin checklist", "compatibility check", "resilience check", or "release proof". Enforces the macOS AU + VST3 (universal) format rule for every plug-in (Logic is AU-only).
 ---
 
 # Native Plugin Proof Checklist
+
+Single source for Claude (`~/.claude/skills/checklist/` symlinks here) and Codex. Edit here only; never fork a copy.
 
 ## Purpose
 
@@ -122,7 +124,6 @@ Any applicable `FAIL`, `BLOCKED`, missing evidence, unsigned artifact, version m
 - Test the actual supported DAWs on each supported OS.
 - Never stop essential meters, history, state synchronization, or licensing refresh solely because JUCE reports `isShowing()`, `isVisible()`, or `getPeer()` as false/null; reproduce the installed host's real wrapper hierarchy.
 - Test installed artifacts after signing and packaging.
-- Measure the editor's cost on the host's UI thread against FabFilter Pro-L 2 in the same run (PERF-15 to PERF-18). The plug-in's window may take at most 1 ms per frame from the host thread; heavy rendering belongs on the plug-in's own thread. GPU rendering (Skia) does not make this automatic: the CPU work runs on whichever thread calls it.
 - Never replace a plug-in while a target host is running; retain a clean pre-install process check and prove the validation host was launched after replacement.
 - Test state from fresh, current, legacy, corrupt, and quick-close cases.
 - Test every advertised zoom at display limits and across session reopen.

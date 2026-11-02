@@ -77,6 +77,7 @@ The completion re-audit added or made explicit the following proof requirements:
 | `HYGIENE-11` | Test/capture environment variables must not leak into normal sessions | Scepter 1.1.27–1.1.28 |
 | `BUILD-11` | Windows header/API portability and `NOMINMAX` | Yasha 0.4.22–0.4.23 |
 | `BUILD-12` | Assert actual universal slices after build | Vanguard 0.15.129, Dagon audit |
+| `BUILD-13` | One current JUCE pin shared and enforced across every platform | Janggo 1.4.5 Windows/Ableton investigation |
 | `RT-13` | Bound multi-hour histories/statistics/queues | Scepter 0.1.268 |
 | `RT-14` | Oversized offline bounce must not truncate or allocate unsafely | Scepter 0.1.255–0.1.267 |
 | `RT-15`, `VALID-13` | Budget host state save/restore and multi-instance close latency | Scepter 0.1.346/1.0.7 |
@@ -107,7 +108,15 @@ The completion re-audit added or made explicit the following proof requirements:
 | `INSTALL-13` | Release shell scripts must quote paths, avoid reserved names, and fail closed | Scepter validator history |
 | `INSTALL-14` | Post-install host validation must use a process launched after bundle replacement | Tether 0.5.2 Ableton reinstallation |
 
-The first draft contained 197 gates. The corrected catalog contains 235 unique gates.
+The first draft contained 197 gates. The corrected catalog plus the 2026-07-14 Janggo maintenance addition contains 236 unique gates.
+
+### Post-audit maintenance addition — 2026-07-14
+
+The Janggo second-instance investigation found that its Windows release workflow still built with JUCE 8.0.4 while macOS validation used JUCE 8.0.12. `BUILD-13` converts that escaped platform dependency drift into a release gate: one repository-owned exact pin, configure-time parity enforcement, and a fail-closed comparison with JUCE's official latest stable release. The 2026-07-11 corpus identity above remains the frozen baseline; this dated semantic delta is recorded separately rather than rewriting its historical hashes.
+
+### Post-audit maintenance change — 2026-09-24
+
+Radiance Classic 0.14.7–0.14.11 shipped macOS installers that carried VST3 only, and a Logic Pro beta tester could not see the plug-in because Logic loads AU only. `BUILD-01` was tightened in place (no new gate; the count stays 236): macOS AU + VST3, universal `arm64+x86_64`, is always required for every plug-in rather than "when advertised", Standalone follows the product's existing lineup, and the proof includes the installers skill's `check_mac_pkg_formats.sh <pkg> <version> [--require-standalone]` gate on the final signed `.pkg`.
 
 ## Core seven product findings retained
 
@@ -119,6 +128,7 @@ The first draft contained 197 gates. The corrected catalog contains 235 unique g
 - Multi-editor pressure mode must shed decoration while preserving automation and meaningful signal geometry.
 - A move-to-only JUCE path can still report empty; waveform connectivity needs explicit state and a pixel guard.
 - Sidechain processing must inspect the actual bus buffer, and validators require a real program name.
+- Every platform must consume the same repository-owned, currently validated JUCE pin; release automation fails closed if the pin is no longer the official latest stable version.
 
 ### Manta
 
@@ -197,3 +207,5 @@ The following histories supplied additional gates but are not counted as substit
 ## Audit limitation and maintenance rule
 
 The JSON ledger proves textual coverage, not correctness of interpretation. When any of the seven changelogs changes, its raw hash will change and this audit must be rerun. Every new escaped compatibility/resilience defect must add or strengthen a checklist gate and a reproducing test. A future claim of “complete” must cite the exact ledger artifact and the semantic mapping delta; it may not rely on elapsed time, file counts, or keyword totals alone.
+
+2026-11-01: `PERF-15`–`PERF-18` (host UI-thread budget measured against Pro-L 2; heavy rendering off the host thread; incremental displays, idle draws nothing; smoothness and host responsiveness proven together), merged here from biskuwi/agent-skills 7d2cc37. 2026-11-02: `PERF-19` (nothing repaints under a GPU surface) and `PERF-20` (display asleep/locked/occluded stays cheap; UI measurements record the display state) added after Scepter 1.9.144 on Windows pegged the host message thread at ~94 % with the console display asleep: hidden JUCE twins under the mt-ui GPU child window made the editor's Direct2D peer paint and `Present` every tick (fixed in Scepter 1.9.145). The catalog now contains 242 unique gates.
